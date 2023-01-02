@@ -1,5 +1,5 @@
+import RemixMetaLinks from "../components/converters/remixMetaLinks";
+
 export default function Home() {
-  return (
-    <div className="">CONTENT</div>
-  )
+  return <RemixMetaLinks />;
 }
