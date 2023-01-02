@@ -1,10 +1,14 @@
-import ReactCodeMirror from "@uiw/react-codemirror";
 import { useEffect, useState } from "react";
-import { html as langHtml } from "@codemirror/lang-html";
-import { javascript as langJs } from "@codemirror/lang-javascript";
 import { format } from "prettier/standalone";
 // @ts-ignore
 import prettierTs from "prettier/esm/parser-typescript.mjs";
+import dynamic from "next/dynamic";
+import "@uiw/react-textarea-code-editor/dist.css";
+
+const CodeEditor = dynamic(
+  () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
+  { ssr: false }
+);
 
 function attrsAsObject(el: HTMLElement) {
   const attrs: Record<string, string> = {};
@@ -20,6 +24,10 @@ function attrsAsObject(el: HTMLElement) {
 export default function RemixMetaLinks() {
   const [html, setHtml] = useState("");
   const [remix, setRemix] = useState("");
+
+  function copyRemixToClipboard() {
+    navigator.clipboard.writeText(remix);
+  }
 
   useEffect(() => {
     const parser = new DOMParser();
@@ -71,22 +79,46 @@ export default function RemixMetaLinks() {
   }, [html]);
 
   return (
-    <div className="grid grid-rows-[1fr_1fr] grid-cols-1 h-full max-h-full">
+    <div className="grid grid-rows-1 grid-cols-[1fr_1px_1fr] h-full max-h-full">
       <div className="overflow-auto max-h-full">
-        <ReactCodeMirror
-          onChange={setHtml}
+        <CodeEditor
           value={html}
-          lang="html"
-          extensions={[langHtml()]}
+          language="html"
+          placeholder="HTML goes here."
+          onChange={(evn) => setHtml(evn.target.value)}
+          padding={15}
+          style={{
+            backgroundColor: "rgb(249, 250, 251)",
+            fontSize: "0.875rem",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
         />
       </div>
+      <div className="bg-black" />
       <div>
-        <h2>output:</h2>
-        <ReactCodeMirror
+        <CodeEditor
           value={remix}
-          lang="typescript"
-          extensions={[langJs()]}
+          language="typescript"
+          placeholder="Remix comes out here."
+          readOnly
+          disabled
+          padding={15}
+          style={{
+            backgroundColor: "rgb(249, 250, 251)",
+            fontSize: "0.875rem",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
         />
+        <div className="bg-gray-50 p-2">
+          <button
+            className="w-full text-sm text-center text-gray-400 p-2 border-transparent border hover:border-gray-300"
+            onClick={copyRemixToClipboard}
+          >
+            * click to copy *
+          </button>
+        </div>
       </div>
     </div>
   );

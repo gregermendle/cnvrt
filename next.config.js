@@ -1,13 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const withTM = require("next-transpile-modules")([
-  "@codemirror/lang-html",
-  "@codemirror/lang-javascript",
-]);
-
-const nextConfig = withTM({
-  reactStrictMode: true,
-  swcMinify: true,
+const removeImports = require("next-remove-imports")();
+module.exports = removeImports({
+  experimental: { esmExternals: true },
 });
-
-module.exports = nextConfig;
