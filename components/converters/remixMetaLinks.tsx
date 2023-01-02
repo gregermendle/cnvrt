@@ -4,6 +4,7 @@ import { format } from "prettier/standalone";
 import prettierTs from "prettier/esm/parser-typescript.mjs";
 import dynamic from "next/dynamic";
 import "@uiw/react-textarea-code-editor/dist.css";
+import Head from "next/head";
 
 const CodeEditor = dynamic(
   () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
@@ -80,6 +81,19 @@ export default function RemixMetaLinks() {
 
   return (
     <div className="grid grid-rows-1 grid-cols-[1fr_1px_1fr] h-full max-h-full">
+      <Head>
+        <title>CNVRT - HTML to Remix Links & Meta</title>
+        <meta
+          property="og:title"
+          content="CNVRT - HTML to Remix Links & Meta"
+          key="title"
+        />
+        <meta
+          property="og:description"
+          content="Convert html meta and link tags to typed Remix Meta and Links functions."
+          key="title"
+        />
+      </Head>
       <div className="overflow-auto max-h-full">
         <CodeEditor
           value={html}
