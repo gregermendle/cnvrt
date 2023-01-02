@@ -21,6 +21,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     <>
       <Head>
         <title>CNVRT</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <link
+          rel="shortcut icon"
+          href="/favicon.png"
+          type="image/x-icon"
+        ></link>
       </Head>
       {getLayout(<Component {...pageProps} />)}
     </>
