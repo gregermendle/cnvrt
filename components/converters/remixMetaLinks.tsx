@@ -91,10 +91,11 @@ export default function RemixMetaLinks() {
         <CodeEditor
           value={html}
           language="html"
-          placeholder="HTML goes here."
+          placeholder="Write or paste HTML here to convert it to Remix over there."
           onChange={(evn) => setHtml(evn.target.value)}
           padding={15}
           style={{
+            minHeight: 100,
             backgroundColor: "rgb(249, 250, 251)",
             fontSize: "0.875rem",
             fontFamily:
