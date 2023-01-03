@@ -48,6 +48,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           content="Convert html meta and link tags to typed Remix Meta and Links functions."
         />
         <meta property="twitter:image" content="https://cnvrt.run/social.png" />
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="https://cnvrt.run/favicon.png"
+        ></link>
       </Head>
       {getLayout(<Component {...pageProps} />)}
     </>
