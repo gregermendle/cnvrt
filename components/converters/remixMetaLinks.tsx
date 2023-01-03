@@ -55,9 +55,12 @@ export default function RemixMetaLinks() {
 
     metas.forEach((meta) => {
       const attrs = attrsAsObject(meta);
+      console.log(attrs);
 
       if ("name" in attrs) {
         remixMeta[attrs.name] = attrs?.content ?? "";
+      } else if ("property" in attrs) {
+        remixMeta[attrs.property] = attrs?.content ?? "";
       } else {
         remixMeta = {
           ...remixMeta,
