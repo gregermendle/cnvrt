@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* https://github.com/atelierbram/Base2Tone-prism/blob/master/output/prism/prism-base2tone-suburb-light.css */
 code[class*="language-"],
 pre[class*="language-"] {
   color: #8696fd;
