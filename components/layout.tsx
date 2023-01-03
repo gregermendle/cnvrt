@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
 
+export function ColorModeToggle() {
+  throw new Error("Not implemented yet.");
+  return null;
+}
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="grid grid-cols-1 grid-rows-[min-content_1fr] h-[100vh]">
