@@ -20,13 +20,34 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <title>CNVRT</title>
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <link
-          rel="shortcut icon"
-          href="/favicon.png"
-          type="image/x-icon"
-        ></link>
+        <title>CNVRT.Run</title>
+        <meta name="title" content="CNVRT.Run - HTML to Remix Links & Meta" />
+        <meta
+          name="description"
+          content="Convert html meta and link tags to typed Remix Meta and Links functions."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://cnvrt.run" />
+        <meta
+          property="og:title"
+          content="CNVRT.Run - HTML to Remix Links & Meta"
+        />
+        <meta
+          property="og:description"
+          content="Convert html meta and link tags to typed Remix Meta and Links functions."
+        />
+        <meta property="og:image" content="https://cnvrt.run/social.png" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://cnvrt.run" />
+        <meta
+          property="twitter:title"
+          content="CNVRT.Run - HTML to Remix Links & Meta"
+        />
+        <meta
+          property="twitter:description"
+          content="Convert html meta and link tags to typed Remix Meta and Links functions."
+        />
+        <meta property="twitter:image" content="https://cnvrt.run/social.png" />
       </Head>
       {getLayout(<Component {...pageProps} />)}
     </>

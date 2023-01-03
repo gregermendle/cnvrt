@@ -25,9 +25,14 @@ function attrsAsObject(el: HTMLElement) {
 export default function RemixMetaLinks() {
   const [html, setHtml] = useState("");
   const [remix, setRemix] = useState("");
+  const [copied, setCopied] = useState(false);
 
   function copyRemixToClipboard() {
     navigator.clipboard.writeText(remix);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1000);
   }
 
   useEffect(() => {
@@ -80,20 +85,8 @@ export default function RemixMetaLinks() {
   }, [html]);
 
   return (
-    <div className="grid grid-rows-1 grid-cols-[1fr_1px_1fr] h-full max-h-full">
-      <Head>
-        <title>CNVRT - HTML to Remix Links & Meta</title>
-        <meta
-          property="og:title"
-          content="CNVRT - HTML to Remix Links & Meta"
-          key="title"
-        />
-        <meta
-          property="og:description"
-          content="Convert html meta and link tags to typed Remix Meta and Links functions."
-          key="title"
-        />
-      </Head>
+    <div className="grid sm:grid-rows-1 sm:grid-cols-[1fr_1px_1fr] grid-cols-1 grid-rows-[1fr_1px_1fr] h-full max-h-full">
+      <PageMeta />
       <div className="overflow-auto max-h-full">
         <CodeEditor
           value={html}
@@ -130,10 +123,45 @@ export default function RemixMetaLinks() {
             className="w-full text-sm text-center text-gray-400 p-2 border-transparent border hover:border-gray-300"
             onClick={copyRemixToClipboard}
           >
-            * click to copy *
+            {copied ? "* copied *" : "* click to copy *"}
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+export function PageMeta() {
+  return (
+    <Head>
+      <title>CNVRT.Run - HTML to Remix Links & Meta</title>
+      <meta name="title" content="CNVRT.Run - HTML to Remix Links & Meta" />
+      <meta
+        name="description"
+        content="Convert html meta and link tags to typed Remix Meta and Links functions."
+      />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://cnvrt.run" />
+      <meta
+        property="og:title"
+        content="CNVRT.Run - HTML to Remix Links & Meta"
+      />
+      <meta
+        property="og:description"
+        content="Convert html meta and link tags to typed Remix Meta and Links functions."
+      />
+      <meta property="og:image" content="https://cnvrt.run/social.png" />
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:url" content="https://cnvrt.run" />
+      <meta
+        property="twitter:title"
+        content="CNVRT.Run - HTML to Remix Links & Meta"
+      />
+      <meta
+        property="twitter:description"
+        content="Convert html meta and link tags to typed Remix Meta and Links functions."
+      />
+      <meta property="twitter:image" content="https://cnvrt.run/social.png" />
+    </Head>
   );
 }
