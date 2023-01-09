@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
 import Layout from "../components/layout";
 import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 
 export type NextPageLayout = (page: ReactElement) => ReactNode;
 
@@ -55,6 +56,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         ></link>
       </Head>
       {getLayout(<Component {...pageProps} />)}
+      <Analytics />
     </>
   );
 }
