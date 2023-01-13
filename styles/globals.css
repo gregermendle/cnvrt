@@ -135,3 +135,48 @@ pre > code.highlight {
   background: #d1478133;
   background: linear-gradient(to right, #d1478133 70%, #d1478100);
 }
+
+[cmdk-root]:after {
+  content: "";
+  background: linear-gradient(
+    110.05deg,
+    #6ca0e3 -5.55%,
+    #aca3de 2.67%,
+    #b3a9d7 10.36%,
+    #85e4b2 14.94%,
+    #70d6dd 19.8%,
+    #97acf1 23.97%,
+    #d9b9e1 28.73%,
+    #e7ddd5 33.09%,
+    #e5cbd9 40.68%,
+    #e4b7df 48.72%,
+    #b8b6e9 56.17%,
+    #8db6f2 65.45%,
+    #b2a9f0 73.83%,
+    #e3b2e8 79.67%,
+    #e9ddda 85.96%,
+    #81f5f7 93.28%,
+    #7ba3f4 98.61%
+  );
+  z-index: -1;
+  position: absolute;
+  border-radius: 12px;
+  top: -1px;
+  left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  animation: shine 6s 0.1s ease forwards infinite;
+  background-size: 200% auto;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 10% 0%;
+  }
+  50% {
+    background-position: 91% 100%;
+  }
+  100% {
+    background-position: 10% 0%;
+  }
+}

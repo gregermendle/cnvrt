@@ -5,6 +5,9 @@ import prettierTs from "prettier/esm/parser-typescript.mjs";
 import dynamic from "next/dynamic";
 import "@uiw/react-textarea-code-editor/dist.css";
 import Head from "next/head";
+import Header from "../layouts/header";
+import { NextPageWithLayout } from "./_app";
+import Base from "../layouts/base";
 
 const CodeEditor = dynamic(
   () => import("@uiw/react-textarea-code-editor").then((mod) => mod.default),
@@ -22,7 +25,7 @@ function attrsAsObject(el: HTMLElement) {
   return attrs;
 }
 
-export default function RemixMetaLinks() {
+export const RemixMetaLinks: NextPageWithLayout = () => {
   const [html, setHtml] = useState("");
   const [remix, setRemix] = useState("");
   const [copied, setCopied] = useState(false);
@@ -99,14 +102,14 @@ export default function RemixMetaLinks() {
           padding={15}
           style={{
             minHeight: 100,
-            backgroundColor: "rgb(249, 250, 251)",
+            backgroundColor: "#f9fafb",
             fontSize: "0.875rem",
             fontFamily:
               "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
           }}
         />
       </div>
-      <div className="bg-black" />
+      <div className="bg-gray-300" />
       <div>
         <CodeEditor
           value={remix}
@@ -116,7 +119,7 @@ export default function RemixMetaLinks() {
           disabled
           padding={15}
           style={{
-            backgroundColor: "rgb(249, 250, 251)",
+            backgroundColor: "#f9fafb",
             fontSize: "0.875rem",
             fontFamily:
               "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
@@ -133,7 +136,7 @@ export default function RemixMetaLinks() {
       </div>
     </div>
   );
-}
+};
 
 export function PageMeta() {
   return (
@@ -169,3 +172,13 @@ export function PageMeta() {
     </Head>
   );
 }
+
+export default RemixMetaLinks;
+
+RemixMetaLinks.getLayout = (page) => {
+  return (
+    <Base>
+      <Header>{page}</Header>
+    </Base>
+  );
+};

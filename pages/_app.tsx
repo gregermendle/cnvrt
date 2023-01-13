@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
-import Layout from "../components/layout";
+import Base from "../layouts/base";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -22,6 +22,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     <>
       <Head>
         <title>CNVRT.Run</title>
+        <meta name="color-scheme" content="only light" />
         <meta name="title" content="CNVRT.Run - HTML to Remix Links & Meta" />
         <meta
           name="description"
@@ -62,5 +63,5 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 }
 
 const defaultLayout: NextPageLayout = (page) => {
-  return <Layout>{page}</Layout>;
+  return <Base>{page}</Base>;
 };
