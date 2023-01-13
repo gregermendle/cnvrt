@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import Button from "../components/Button";
 import { useCmdk } from "../components/Cmdk";
+import Logo from "../components/Logo";
 
 export function ColorModeToggle() {
   throw new Error("Not implemented yet.");
@@ -15,7 +16,7 @@ export default function Header({ children }: { children: ReactNode }) {
     <div className="grid grid-cols-1 grid-rows-[min-content_1fr] h-[100vh] text-gray-800">
       <header className="flex justify-between items-center h-14 px-6 border-b-gray-300 border-b">
         <Link href="/" className="font-bold">
-          CNVRT
+          <Logo width={64} height={40} />
         </Link>
         <div className="flex items-center gap-4">
           <Button

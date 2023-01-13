@@ -1,13 +1,16 @@
-import { ReactNode } from "react";
+import { HTMLAttributes } from "react";
+import { cn } from "../utils";
 
-export type CardProps = {
-  children: ReactNode;
-};
+export type CardProps = HTMLAttributes<HTMLDivElement>;
 
-export const Card = ({ children }: CardProps) => {
+export const Card = ({ className, ...rest }: CardProps) => {
   return (
-    <div className="rounded-md bg-white border border-gray-300 shadow-sm overflow-hidden">
-      {children}
-    </div>
+    <div
+      className={cn(
+        "rounded-md bg-white border border-gray-300 shadow-sm overflow-hidden",
+        className
+      )}
+      {...rest}
+    />
   );
 };

@@ -1,6 +1,7 @@
 import Button from "../components/Button";
 import { useCmdk } from "../components/Cmdk";
 import LinkCard from "../components/LinkCard";
+import Logo from "../components/Logo";
 import { Links } from "../constants";
 
 export default function Home() {
@@ -28,35 +29,7 @@ export default function Home() {
       </header>
       <main className="flex flex-col max-w-4xl w-full mx-auto px-6 gap-20">
         <div className="flex flex-col items-center justify-center mt-48 gap-20">
-          <svg
-            className="text-gray-800"
-            width="337"
-            height="61"
-            viewBox="0 0 337 61"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M59.816 34.9764H43.2632C43.4136 46.8122 42.0593 48.102 30.0209 48.102C17.9072 48.102 16.5529 46.357 16.5529 30.5C16.5529 14.643 17.9072 12.898 30.0209 12.898C42.0593 12.898 43.4136 14.1878 43.2632 25.8719H59.816C59.9665 5.1592 54.0225 0 30.0209 0C6.01922 0 0 6.06966 0 30.5C0 54.9303 6.01922 61 30.0209 61C54.0225 61 59.9665 55.7649 59.816 34.9764Z"
-              fill="currentColor"
-            />
-            <path
-              d="M74.8993 60.0896H90.6998V27.8445H91.1512L117.184 60.0896H132.082V0.91045H116.281V33.2313H115.83L89.8722 0.91045H74.8993V60.0896Z"
-              fill="currentColor"
-            />
-            <path
-              d="M206.388 0.91045H189.76L175.464 44.9154H175.013L161.846 0.91045H144.541L162.222 60.0896H187.202L206.388 0.91045Z"
-              fill="currentColor"
-            />
-            <path
-              d="M253.115 0.91045H219.558V60.0896H235.358V39.2251H247.096C255.297 39.2251 256.124 39.908 256.124 46.4328V60.0896H272.677V45.5224C272.677 37.9353 268.689 34.4453 260.864 33.6107C269.066 32.4726 272.677 27.8445 272.677 18.0572C272.677 4.32463 268.765 0.91045 253.115 0.91045ZM235.358 27.0858V13.8085H249.052C256.124 13.8085 256.877 14.4913 256.877 20.3333C256.877 26.403 256.124 27.0858 249.052 27.0858H235.358Z"
-              fill="currentColor"
-            />
-            <path
-              d="M303.067 60.0896H318.867V14.5672H337V0.91045H285.084V14.5672H303.067V60.0896Z"
-              fill="currentColor"
-            />
-          </svg>
+          <Logo />
           <Button
             size="xl"
             className="max-w-md w-full justify-between"
@@ -78,7 +51,7 @@ export default function Home() {
           </header>
           <div className="flex flex-wrap gap-4">
             {Links.map((x) => (
-              <LinkCard href={x.href} className="w-72">
+              <LinkCard href={x.href} className="w-72" key={x.href}>
                 <div>{x.title}</div>
                 <div className="text-gray-600 font-normal">{x.description}</div>
               </LinkCard>

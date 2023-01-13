@@ -71,6 +71,8 @@ export const Cmdk = ({ children }: { children: ReactNode }) => {
           -translate-x-1/2
           rounded-xl
           overflow-hidden
+          border
+          border-gray-300
           z-20
           max-w-xl
           w-full

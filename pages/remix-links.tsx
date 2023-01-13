@@ -141,18 +141,15 @@ export const RemixMetaLinks: NextPageWithLayout = () => {
 export function PageMeta() {
   return (
     <Head>
-      <title>CNVRT.Run - HTML to Remix Links & Meta</title>
-      <meta name="title" content="CNVRT.Run - HTML to Remix Links & Meta" />
+      <title>CNVRT - HTML to Remix Links & Meta</title>
+      <meta name="title" content="CNVRT - HTML to Remix Links & Meta" />
       <meta
         name="description"
         content="Convert html meta and link tags to typed Remix Meta and Links functions."
       />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://cnvrt.run" />
-      <meta
-        property="og:title"
-        content="CNVRT.Run - HTML to Remix Links & Meta"
-      />
+      <meta property="og:title" content="CNVRT - HTML to Remix Links & Meta" />
       <meta
         property="og:description"
         content="Convert html meta and link tags to typed Remix Meta and Links functions."
@@ -162,7 +159,7 @@ export function PageMeta() {
       <meta property="twitter:url" content="https://cnvrt.run" />
       <meta
         property="twitter:title"
-        content="CNVRT.Run - HTML to Remix Links & Meta"
+        content="CNVRT - HTML to Remix Links & Meta"
       />
       <meta
         property="twitter:description"
