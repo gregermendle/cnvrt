@@ -21,9 +21,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <title>CNVRT.Run</title>
+        <title>CNVRT.run</title>
         <meta name="color-scheme" content="only light" />
-        <meta name="title" content="CNVRT.Run - HTML to Remix Links & Meta" />
+        <meta name="title" content="CNVRT.run - HTML to Remix Links & Meta" />
         <meta
           name="description"
           content="Convert html meta and link tags to typed Remix Meta and Links functions."
@@ -32,7 +32,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta property="og:url" content="https://cnvrt.run" />
         <meta
           property="og:title"
-          content="CNVRT.Run - HTML to Remix Links & Meta"
+          content="CNVRT.run - HTML to Remix Links & Meta"
         />
         <meta
           property="og:description"
@@ -43,7 +43,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta property="twitter:url" content="https://cnvrt.run" />
         <meta
           property="twitter:title"
-          content="CNVRT.Run - HTML to Remix Links & Meta"
+          content="CNVRT.run - HTML to Remix Links & Meta"
         />
         <meta
           property="twitter:description"

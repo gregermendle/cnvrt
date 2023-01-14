@@ -134,10 +134,10 @@ export const Converter = ({ file }: { file: File }) => {
 export function PageMeta() {
   return (
     <Head>
-      <title>CNVRT - Convert images to PNG, JPG, and BMP</title>
+      <title>CNVRT.run - Convert images to PNG, JPG, and BMP</title>
       <meta
         name="title"
-        content="CNVRT - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
       />
       <meta
         name="description"
@@ -147,7 +147,7 @@ export function PageMeta() {
       <meta property="og:url" content="https://cnvrt.run" />
       <meta
         property="og:title"
-        content="CNVRT - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
       />
       <meta
         property="og:description"
@@ -158,7 +158,7 @@ export function PageMeta() {
       <meta property="twitter:url" content="https://cnvrt.run" />
       <meta
         property="twitter:title"
-        content="CNVRT - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
       />
       <meta
         property="twitter:description"
