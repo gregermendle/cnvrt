@@ -2,28 +2,28 @@ import { createFFmpeg, FFmpeg } from "@ffmpeg/ffmpeg";
 import { useCallback, useEffect, useState } from "react";
 
 let _ffmpeg: FFmpeg;
-export const useFFmpeg = <T>(
-  _runner: (ffmpeg: FFmpeg, file: File) => Promise<T>
+export const useFFmpeg = <T, V extends File | File[]>(
+  _runner: (ffmpeg: FFmpeg, file: V) => Promise<T>
 ) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"stopped" | "running">("stopped");
 
-  if (!_ffmpeg) {
-    _ffmpeg = createFFmpeg({
-      log: true,
-      corePath: window.origin + "/ffmpeg/ffmpeg-core.js",
-    });
-  }
-
   useEffect(() => {
+    if (!_ffmpeg) {
+      _ffmpeg = createFFmpeg({
+        log: true,
+        corePath: window.origin + "/ffmpeg/ffmpeg-core.js",
+      });
+    }
+
     _ffmpeg.setProgress(({ ratio }) => {
       setProgress(ratio);
     });
   }, []);
 
   const run = useCallback(
-    async (file: File) => {
+    async (file: V) => {
       try {
         if (!_ffmpeg.isLoaded()) {
           await _ffmpeg.load();

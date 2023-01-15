@@ -14,4 +14,9 @@ export const Links = [
     description: "Convert most video formats to animated gif.",
     href: "/video-to-gif",
   },
+  {
+    title: "Stack Videos",
+    description: "Stack two videos on top of eachother.",
+    href: "/stack-videos",
+  },
 ];
