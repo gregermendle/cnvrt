@@ -7,6 +7,7 @@ import {
 } from "react";
 
 export type DragAndDropProps = {
+  multiple?: boolean;
   children: (options: {
     dragging: boolean;
     files: File[];
@@ -18,6 +19,7 @@ export type DragAndDropProps = {
 export default function DragAndDrop({
   children,
   allowedTypes,
+  multiple,
 }: DragAndDropProps) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -49,6 +51,11 @@ export default function DragAndDrop({
   };
 
   const handleFiles = (files: FileList) => {
+    if (!multiple) {
+      const first = files.item(0)!;
+      return setFiles({ [first.name]: first });
+    }
+
     let filesByName: Record<string, File> = {};
     for (let i = 0; i < files.length; i++) {
       const item = files.item(i);
@@ -77,8 +84,9 @@ export default function DragAndDrop({
       <input
         ref={fileInput}
         type="file"
-        multiple
+        multiple={multiple}
         className="hidden"
+        accept={allowedTypes?.map((x) => `${x}/*`).join(",") ?? "*"}
         onChange={handleFileInputChange}
       />
       {children({ dragging, files: Object.values(files), openFileViewer })}

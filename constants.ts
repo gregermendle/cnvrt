@@ -6,7 +6,12 @@ export const Links = [
   },
   {
     title: "Image Converter",
-    description: "Convert most image formats to PNG or JPG",
+    description: "Convert most image formats to PNG or JPG.",
     href: "/image-convert",
+  },
+  {
+    title: "Video to Gif",
+    description: "Convert most video formats to animated gif.",
+    href: "/video-to-gif",
   },
 ];

@@ -49,9 +49,9 @@ export default function Home() {
               Hopefully these can be of use to you :)
             </p>
           </header>
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {Links.map((x) => (
-              <LinkCard href={x.href} className="w-72" key={x.href}>
+              <LinkCard href={x.href} key={x.href}>
                 <div>{x.title}</div>
                 <div className="text-gray-600 font-normal">{x.description}</div>
               </LinkCard>

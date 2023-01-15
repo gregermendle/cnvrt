@@ -5,59 +5,34 @@ import Base from "../layouts/base";
 import DragAndDrop from "../components/DragAndDrop";
 import Button from "../components/Button";
 import { NextPageWithLayout } from "./_app";
-import { Card } from "../components/Card";
-import { cn } from "../utils";
+import { Card, CardFooter, CardHeader } from "../components/Card";
+import UploadButton from "../components/UploadButton";
 
 export const ImageConvert: NextPageWithLayout = () => {
   return (
     <div className="h-full max-h-full px-2">
       <PageMeta />
-      <DragAndDrop allowedTypes={["image"]}>
+      <DragAndDrop allowedTypes={["image"]} multiple>
         {({ dragging, files, openFileViewer }) => (
           <>
             <Card className="w-full max-w-2xl mx-auto md:mt-16 mt-8">
-              <header className="px-6 py-4">
-                <div className="text-2xl font-semibold text-gray-800">
-                  Convert images
-                </div>
-                <div className="text-md text-gray-500">
-                  Convert images from any browser supported format to PNG, JPG,
-                  or BMP
-                </div>
-              </header>
+              <CardHeader
+                heading="Convert images"
+                subHeading="Convert images from any browser supported format to PNG, JPG,
+                  or BMP"
+              />
               <div className="px-6 pb-6 flex flex-col items-start justify-start gap-4">
-                <button
-                  onClick={openFileViewer}
-                  className={cn(
-                    "relative overflow-visible flex items-center justify-center gap-4 p-6 py-4 rounded-md bg-primary-100 text-primary-800 font-semibold my-2 w-full border-2 border-primary-400 hover:shine",
-                    dragging && "shine"
-                  )}
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21ZM5 21L16 10L21 15M10 8.5C10 9.32843 9.32843 10 8.5 10C7.67157 10 7 9.32843 7 8.5C7 7.67157 7.67157 7 8.5 7C9.32843 7 10 7.67157 10 8.5Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                <UploadButton onClick={openFileViewer} isDragging={dragging}>
                   Drag and drop or click to add images
-                </button>
+                </UploadButton>
                 {files.map((file) => (
                   <Converter key={file.name} file={file} />
                 ))}
               </div>
-              <div className="px-6 py-4 text-sm text-gray-500 border-t border-t-gray-300">
+              <CardFooter>
                 The conversion process happens in your browser. Images are not
                 uploaded or stored on cnvrt.
-              </div>
+              </CardFooter>
             </Card>
           </>
         )}
@@ -101,9 +76,9 @@ export const Converter = ({ file }: { file: File }) => {
   }, [file]);
 
   return (
-    <div className="flex w-full items-start gap-4">
-      <div className="flex ring ring-1 ring-primary-600 rounded-md overflow-hidden flex-col">
-        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1">
+    <div className="flex w-full items-start gap-4 sm:flex-row flex-col">
+      <div className="flex ring ring-primary-600 rounded-md overflow-hidden flex-col flex-shrink-0">
+        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
           <span>
             {width}px X {height}px
           </span>
@@ -115,7 +90,7 @@ export const Converter = ({ file }: { file: File }) => {
         <div className="text-md font-semibold text-gray-800 leading-none mb-2">
           Download {name} as
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button onClick={() => downloadAs("png", "image/png")} size="sm">
             PNG
           </Button>
@@ -139,10 +114,7 @@ export function PageMeta() {
         name="title"
         content="CNVRT.run - Convert images to PNG, JPG, and BMP"
       />
-      <meta
-        name="description"
-        content="Convert most image formats to PNG or JPG"
-      />
+      <meta name="description" content="Convert images to PNG, JPG, and BMP" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://cnvrt.run" />
       <meta
@@ -151,7 +123,7 @@ export function PageMeta() {
       />
       <meta
         property="og:description"
-        content="Convert most image formats to PNG or JPG"
+        content="Convert images to PNG, JPG, and BMP"
       />
       <meta property="og:image" content="https://cnvrt.run/social.png" />
       <meta property="twitter:card" content="summary_large_image" />
@@ -162,7 +134,7 @@ export function PageMeta() {
       />
       <meta
         property="twitter:description"
-        content="Convert most image formats to PNG or JPG"
+        content="Convert images to PNG, JPG, and BMP"
       />
       <meta property="twitter:image" content="https://cnvrt.run/social.png" />
     </Head>
