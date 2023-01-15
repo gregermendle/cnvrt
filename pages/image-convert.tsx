@@ -114,10 +114,7 @@ export function PageMeta() {
         name="title"
         content="CNVRT.run - Convert images to PNG, JPG, and BMP"
       />
-      <meta
-        name="description"
-        content="Convert most image formats to PNG or JPG"
-      />
+      <meta name="description" content="Convert images to PNG, JPG, and BMP" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://cnvrt.run" />
       <meta
@@ -126,7 +123,7 @@ export function PageMeta() {
       />
       <meta
         property="og:description"
-        content="Convert most image formats to PNG or JPG"
+        content="Convert images to PNG, JPG, and BMP"
       />
       <meta property="og:image" content="https://cnvrt.run/social.png" />
       <meta property="twitter:card" content="summary_large_image" />
@@ -137,7 +134,7 @@ export function PageMeta() {
       />
       <meta
         property="twitter:description"
-        content="Convert most image formats to PNG or JPG"
+        content="Convert images to PNG, JPG, and BMP"
       />
       <meta property="twitter:image" content="https://cnvrt.run/social.png" />
     </Head>

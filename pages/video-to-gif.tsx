@@ -133,35 +133,32 @@ export const Converter = ({ file }: { file: File }) => {
 export function PageMeta() {
   return (
     <Head>
-      <title>CNVRT.run - Convert images to PNG, JPG, and BMP</title>
+      <title>CNVRT.run - Convert video files to animated gifs</title>
       <meta
         name="title"
-        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert video files to animated gifs"
       />
-      <meta
-        name="description"
-        content="Convert most video formats to animated gif"
-      />
+      <meta name="description" content="Convert video files to animated gifs" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://cnvrt.run" />
       <meta
         property="og:title"
-        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert video files to animated gifs"
       />
       <meta
         property="og:description"
-        content="Convert most video formats to animated gif"
+        content="Convert video files to animated gifs"
       />
       <meta property="og:image" content="https://cnvrt.run/social.png" />
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://cnvrt.run" />
       <meta
         property="twitter:title"
-        content="CNVRT.run - Convert images to PNG, JPG, and BMP"
+        content="CNVRT.run - Convert video files to animated gifs"
       />
       <meta
         property="twitter:description"
-        content="Convert most video formats to animated gif"
+        content="Convert video files to animated gifs"
       />
       <meta property="twitter:image" content="https://cnvrt.run/social.png" />
     </Head>
