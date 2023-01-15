@@ -12,7 +12,7 @@ module.exports = {
         headers: [
           { key: "Access-Control-Allow-Origin", value: "*" },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
           { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
         ],
       },
