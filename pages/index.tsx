@@ -49,7 +49,7 @@ export default function Home() {
               Hopefully these can be of use to you :)
             </p>
           </header>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4 grid-cols-1">
             {Links.map((x) => (
               <LinkCard href={x.href} key={x.href}>
                 <div>{x.title}</div>

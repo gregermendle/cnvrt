@@ -16,7 +16,7 @@ export const Base = `
   overflow-hidden
   gap-3 
   rounded-lg 
-  font-semibold 
+  font-normal 
   outline-none 
   transition-shadow
   transition-opacity
@@ -31,7 +31,6 @@ export const Base = `
   border-gray-300 
   text-gray-700
   ring-primary-600
-  font-medium
   relative
 `;
 

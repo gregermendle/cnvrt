@@ -29,7 +29,7 @@ export const CardHeader = ({
   return (
     <header className={cn("px-6 py-4", className)} {...rest}>
       <div className="text-2xl font-semibold text-gray-800">{heading}</div>
-      <div className="text-md text-gray-500">{subHeading}</div>
+      <div className="text-md text-gray-500 leading-tight">{subHeading}</div>
     </header>
   );
 };

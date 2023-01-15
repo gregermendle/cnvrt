@@ -17,7 +17,7 @@ export const Base = `
   overflow-hidden
   gap-3 
   rounded-lg 
-  font-semibold 
+  font-medium 
   outline-none 
   transition-shadow
   transition-opacity

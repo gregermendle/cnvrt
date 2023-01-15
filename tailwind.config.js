@@ -195,6 +195,7 @@ module.exports = {
         "8xl": "4.5rem",
       },
       fontFamily: {
+        sans: ["Inter, sans-serif"],
         inter: "Inter",
       },
       boxShadow: {

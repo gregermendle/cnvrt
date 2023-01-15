@@ -87,7 +87,7 @@ export const Converter = ({ file }: { file: File }) => {
       setInfo({
         height: video.current!.videoHeight,
         width: video.current!.videoWidth,
-        mimeType: file.type.split("/")?.[1],
+        mimeType: file.type,
         name: file.name,
       });
     };
@@ -99,8 +99,8 @@ export const Converter = ({ file }: { file: File }) => {
   }, [file]);
 
   return (
-    <div className="flex w-full items-start gap-4 sm:flex-row flex-col">
-      <div className="flex ring ring-primary-600 rounded-md overflow-hidden flex-col flex-shrink-0">
+    <div className="grid sm:grid-cols-[min-content_1fr] gap-4 grid-cols-1 w-full">
+      <div className="ring ring-primary-600 rounded-md overflow-hidden">
         <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
           <span>
             {width}px X {height}px
@@ -108,7 +108,10 @@ export const Converter = ({ file }: { file: File }) => {
           <span>{mimeType}</span>
         </div>
         <video preload="auto" ref={video} className="hidden" />
-        <canvas ref={canvas} className="object-cover w-64 h-40" />
+        <canvas
+          ref={canvas}
+          className="object-cover h-72 w-full sm:w-64 sm:h-40"
+        />
       </div>
       <div>
         <div className="text-md font-semibold text-gray-800 leading-none mb-2">
