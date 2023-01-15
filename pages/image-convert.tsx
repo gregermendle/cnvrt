@@ -101,9 +101,9 @@ export const Converter = ({ file }: { file: File }) => {
   }, [file]);
 
   return (
-    <div className="flex w-full items-start gap-4">
-      <div className="flex ring ring-1 ring-primary-600 rounded-md overflow-hidden flex-col">
-        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1">
+    <div className="flex w-full items-start gap-4 sm:flex-row flex-col">
+      <div className="flex ring ring-primary-600 rounded-md overflow-hidden flex-col flex-shrink-0">
+        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
           <span>
             {width}px X {height}px
           </span>
@@ -115,7 +115,7 @@ export const Converter = ({ file }: { file: File }) => {
         <div className="text-md font-semibold text-gray-800 leading-none mb-2">
           Download {name} as
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button onClick={() => downloadAs("png", "image/png")} size="sm">
             PNG
           </Button>
