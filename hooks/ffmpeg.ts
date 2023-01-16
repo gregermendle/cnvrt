@@ -10,9 +10,14 @@ export const useFFmpeg = <T>(
   const [status, setStatus] = useState<"stopped" | "running">("stopped");
 
   if (!_ffmpeg) {
+    const isSupported = typeof SharedArrayBuffer === "function";
+
     _ffmpeg = createFFmpeg({
       log: true,
-      corePath: window.origin + "/ffmpeg/ffmpeg-core.js",
+      mainName: isSupported ? "proxy_main" : "main",
+      corePath: isSupported
+        ? window.origin + "/ffmpeg/ffmpeg-core.js"
+        : "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js",
     });
   }
 
@@ -25,10 +30,10 @@ export const useFFmpeg = <T>(
   const run = useCallback(
     async (file: File) => {
       try {
+        setStatus("running");
         if (!_ffmpeg.isLoaded()) {
           await _ffmpeg.load();
         }
-        setStatus("running");
         const result = await _runner(_ffmpeg, file);
         setStatus("stopped");
         return result;
