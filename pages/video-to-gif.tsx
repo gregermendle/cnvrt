@@ -45,8 +45,8 @@ export const VideoToGif: NextPageWithLayout = () => {
 export const Converter = ({ file }: { file: File }) => {
   const [convertVideo, conversionStatus, conversionProgress] =
     useFFmpeg(videoToGif);
-  const canvas = useRef<HTMLCanvasElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const output = useRef<HTMLImageElement>(null);
   const [{ name, width, height, mimeType }, setInfo] = useState({
     width: 0,
     height: 0,
@@ -57,6 +57,7 @@ export const Converter = ({ file }: { file: File }) => {
   async function convert() {
     const gif = await convertVideo(file);
     if (gif) {
+      output.current!.src = gif;
       const link = document.createElement("a");
       link.download = `download.gif`;
       link.href = gif;
@@ -65,25 +66,22 @@ export const Converter = ({ file }: { file: File }) => {
   }
 
   useEffect(() => {
-    const ctx = canvas.current!.getContext("2d")!;
-    video.current!.src = URL.createObjectURL(file);
+    const fr = new FileReader();
 
-    const drawImage = () => {
-      ctx.clearRect(
-        0,
-        0,
-        video.current!.videoWidth,
-        video.current!.videoHeight
-      );
-      canvas.current!.height = video.current!.videoHeight;
-      canvas.current!.width = video.current!.videoWidth;
-      ctx.drawImage(
-        video.current!,
-        0,
-        0,
-        canvas.current!.width,
-        canvas.current!.height
-      );
+    fr.addEventListener("load", () => {
+      const dataUrl = fr.result;
+      if (typeof dataUrl === "string") {
+        const source = document.createElement("source");
+        source.src = dataUrl;
+        source.type = file.type;
+        video.current!.replaceChildren(source);
+        video.current!.currentTime = 1;
+      }
+    });
+
+    fr.readAsDataURL(file);
+
+    const getVideoMetadata = () => {
       setInfo({
         height: video.current!.videoHeight,
         width: video.current!.videoWidth,
@@ -92,14 +90,14 @@ export const Converter = ({ file }: { file: File }) => {
       });
     };
 
-    video.current?.addEventListener("canplay", drawImage);
+    video.current?.addEventListener("canplay", getVideoMetadata);
     return () => {
-      video.current?.removeEventListener("canplay", drawImage);
+      video.current?.removeEventListener("canplay", getVideoMetadata);
     };
   }, [file]);
 
   return (
-    <div className="grid sm:grid-cols-[min-content_1fr] gap-4 grid-cols-1 w-full">
+    <div className="grid gap-4 grid-cols-1 w-full">
       <div className="ring ring-primary-600 rounded-md overflow-hidden">
         <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
           <span>
@@ -107,10 +105,14 @@ export const Converter = ({ file }: { file: File }) => {
           </span>
           <span>{mimeType}</span>
         </div>
-        <video preload="auto" ref={video} className="hidden" />
-        <canvas
-          ref={canvas}
-          className="object-cover h-72 w-full sm:w-64 sm:h-40"
+        <video
+          preload="metadata"
+          ref={video}
+          className="w-full"
+          muted
+          loop
+          autoPlay
+          playsInline
         />
       </div>
       <div>
@@ -128,6 +130,15 @@ export const Converter = ({ file }: { file: File }) => {
               : `Converting... ${Math.ceil(conversionProgress * 100)}%`}
           </Button>
         </div>
+      </div>
+      <div className="ring ring-primary-600 rounded-md overflow-hidden">
+        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
+          <span>
+            {width}px X {height}px
+          </span>
+          <span>image/gif</span>
+        </div>
+        <img ref={output} className="w-full" crossOrigin="anonymous" />
       </div>
     </div>
   );
