@@ -184,7 +184,7 @@ export const Converter = ({
 
   return (
     <div className="h-full flex items-center">
-      <div className="relative grid grid-cols-2 grid-rows-[min-content,1fr,min-content] w-full max-w-2xl mx-auto gap-y-4">
+      <div className="relative grid sm:grid-cols-2 grid-cols-1 grid-rows-[min-content,1fr,min-content] w-full max-w-2xl mx-auto gap-y-4">
         <div className="text-center flex items-center gap-2 justify-center">
           video
           {previewStatus !== "idle" && (
@@ -193,10 +193,10 @@ export const Converter = ({
             </button>
           )}
         </div>
-        <div className="text-center">
+        <div className="text-center hidden sm:block">
           {conversionStatus.type !== "finished" && "gif"}
         </div>
-        <div className="col-span-2 bg-black border border-black grid grid-cols-2 grid-rows-1 gap-6 rounded-3xl overflow-hidden">
+        <div className="col-span-2 bg-black border border-black grid sm:grid-cols-2 sm:grid-rows-1 grid-rows-2 grid-cols-1 gap-6 rounded-3xl overflow-hidden">
           <div className="bg-[#ECECEC] relative rounded-r-3xl aspect-auto h-64 flex items-center justify-center overflow-hidden">
             {previewStatus === "loading" && <div>loading...</div>}
             {previewStatus === "unavailable" && <div>preview unavailable</div>}
@@ -234,7 +234,8 @@ export const Converter = ({
               <Cat
                 half={conversionStatus.type === "finished"}
                 className={cn(
-                  conversionStatus.type === "finished" && "absolute -top-2"
+                  conversionStatus.type === "finished" &&
+                    "absolute sm:-top-2 sm:rotate-0 bottom-8 rotate-180"
                 )}
               />
               <img
@@ -263,7 +264,12 @@ export const Converter = ({
             </div>
           </div>
         </div>
-        <div className="col-span-2 text-center">
+        <div
+          className={cn(
+            "col-span-2 text-center",
+            conversionStatus.type === "finished" && "sm:pt-0 pt-10"
+          )}
+        >
           convert video to an animated gif
         </div>
       </div>

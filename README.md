@@ -1,10 +1,10 @@
-# CNVRT
+# cnvrt
 
-Some useful conversion tools to make life a little easier.
+convert video to gif with kitty.
 
-## Getting Started
+## getting Started
 
-Run the deployment server using:
+run the deployment server using:
 
 ```
 pnpm dev
