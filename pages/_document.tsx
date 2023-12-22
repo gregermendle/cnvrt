@@ -15,7 +15,7 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-      <body className="h-full">
+      <body className="h-full font-mono text-sm bg-[#CCC]">
         <Main />
         <NextScript />
       </body>
