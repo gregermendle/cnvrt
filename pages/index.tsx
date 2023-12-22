@@ -1,13 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import DragAndDrop from "../components/DragAndDrop";
-import Button from "../components/Button";
-import { Card, CardFooter, CardHeader } from "../components/Card";
-import UploadButton from "../components/UploadButton";
 import { videoToGif } from "../lib/video";
 import { useFFmpeg } from "../hooks/ffmpeg";
 import { NextPage } from "next/types";
 import Link from "next/link";
+import { cn } from "../utils";
+import {
+  delayWhen,
+  from,
+  fromEvent,
+  interval,
+  map,
+  mergeMap,
+  of,
+  repeat,
+  switchMap,
+  takeUntil,
+  tap,
+  timer,
+} from "rxjs";
+import { useRouter } from "next/router";
 
 export const VideoToGif: NextPage = () => {
   return (
@@ -16,26 +29,11 @@ export const VideoToGif: NextPage = () => {
       <PageMeta />
       <DragAndDrop allowedTypes={["video"]}>
         {({ dragging, files, openFileViewer }) => (
-          <>
-            <Card className="w-full max-w-2xl mx-auto md:mt-16 mt-8">
-              <CardHeader
-                heading="Video to GIF"
-                subHeading="Convert most video formats to animated gif"
-              />
-              <div className="px-6 pb-6 flex flex-col items-start justify-start gap-4">
-                <UploadButton onClick={openFileViewer} isDragging={dragging}>
-                  Drag and drop or click to add a video
-                </UploadButton>
-                {files.map((file) => (
-                  <Converter key={file.name} file={file} />
-                ))}
-              </div>
-              <CardFooter>
-                The conversion process happens in your browser. Images are not
-                uploaded or stored on cnvrt.
-              </CardFooter>
-            </Card>
-          </>
+          <Converter
+            onImportClick={openFileViewer}
+            file={files[0]}
+            dragging={dragging}
+          />
         )}
       </DragAndDrop>
       <div className="text-center px-2 py-2">
@@ -50,6 +48,7 @@ const Header = () => {
   return (
     <div className="flex justify-between px-2 py-2">
       <svg
+        aria-label="cnvrt logo"
         width="33"
         height="9"
         viewBox="0 0 33 9"
@@ -61,110 +60,212 @@ const Header = () => {
           fill="black"
         />
       </svg>
-
       <Link href="https://github.com/gregermendle/cnvrt">github</Link>
     </div>
   );
 };
 
-export const Converter = ({ file }: { file: File }) => {
+const eyesOpenASCII = [
+  " /\\__/\\",
+  "( •⩊• )",
+  " >    <",
+  "( U  U )",
+  " @    @",
+];
+
+const eyesClosedASCII = [
+  " /\\__/\\",
+  "( >⩊< )",
+  " >    <",
+  "( U  U )",
+  " @    @",
+];
+
+const pawsOnlyASCII = "  U  U  ";
+
+const pawsOnly = (x: Array<string>) => {
+  return [...x.slice(0, 3), pawsOnlyASCII];
+};
+
+export const Cat = ({
+  half,
+  className,
+  ...rest
+}: React.HTMLAttributes<HTMLPreElement> & { half: boolean }) => {
+  const [frame, setFrame] = useState(eyesOpenASCII);
+
+  // Could probably do this with css but i dont feel like it
+  useEffect(() => {
+    const blink = from([[eyesClosedASCII, eyesOpenASCII]])
+      .pipe(
+        mergeMap((x) =>
+          from(x).pipe(
+            map((x) => (half ? pawsOnly(x) : x)),
+            repeat(Math.round(1 + Math.random() * 1))
+          )
+        ),
+        delayWhen((_, idx) => interval(idx * 150)),
+        tap(setFrame),
+        delayWhen(() => interval(4000 + Math.round(Math.random() * 4000))),
+        repeat()
+      )
+      .subscribe();
+
+    return () => blink.unsubscribe();
+  }, [half]);
+
+  return (
+    <pre
+      {...rest}
+      className={cn(className, "leading-tight")}
+      aria-label="kitty ascii art"
+    >
+      {frame.join("\n")}
+    </pre>
+  );
+};
+
+export const Converter = ({
+  file,
+  onImportClick,
+  dragging,
+}: {
+  file?: File;
+  dragging: boolean;
+  onImportClick: () => void;
+}) => {
   const [convertVideo, conversionStatus] = useFFmpeg(videoToGif);
   const video = useRef<HTMLVideoElement>(null);
   const output = useRef<HTMLImageElement>(null);
-  const [{ name, width, height, mimeType }, setInfo] = useState({
-    width: 0,
-    height: 0,
-    mimeType: "",
-    name: "",
-  });
+  const router = useRouter();
+  const [previewStatus, setPreviewStatus] = useState<
+    "idle" | "loading" | "ready" | "unavailable"
+  >("idle");
 
-  const isStopped = conversionStatus.type === "stopped";
+  const isFinished = conversionStatus.type === "finished";
   useEffect(() => {
-    if (isStopped && typeof conversionStatus.output === "string") {
+    if (isFinished && typeof conversionStatus.output === "string") {
       output.current!.src = conversionStatus.output;
-      const link = document.createElement("a");
-      link.download = `download.gif`;
-      link.href = conversionStatus.output;
-      link.click();
     }
-  }, [isStopped]);
+  }, [isFinished]);
 
   useEffect(() => {
-    const fr = new FileReader();
+    if (!file) return;
 
-    fr.addEventListener("load", () => {
-      const dataUrl = fr.result;
-      if (typeof dataUrl === "string") {
-        const source = document.createElement("source");
-        source.src = dataUrl;
-        source.type = file.type;
-        video.current!.replaceChildren(source);
-        video.current!.currentTime = 1;
-      }
-    });
+    const sub = of(file)
+      .pipe(
+        tap(() => {
+          setPreviewStatus("loading");
 
-    fr.readAsDataURL(file);
+          const dataUrl = URL.createObjectURL(file);
+          if (typeof dataUrl === "string") {
+            const source = document.createElement("source");
+            source.src = dataUrl;
+            source.type = file.type;
+            video.current!.replaceChildren(source);
+            video.current!.currentTime = 1;
+          }
+        }),
+        switchMap(() => {
+          const canPlay = fromEvent(video.current!, "canplay").pipe(
+            tap(() => setPreviewStatus("ready"))
+          );
 
-    const getVideoMetadata = () => {
-      setInfo({
-        height: video.current!.videoHeight,
-        width: video.current!.videoWidth,
-        mimeType: file.type,
-        name: file.name,
-      });
-    };
+          return timer(6 * 1000).pipe(
+            takeUntil(canPlay),
+            tap(() => setPreviewStatus("unavailable"))
+          );
+        })
+      )
+      .subscribe();
 
-    video.current?.addEventListener("canplay", getVideoMetadata);
-    return () => {
-      video.current?.removeEventListener("canplay", getVideoMetadata);
-    };
+    return () => sub.unsubscribe();
   }, [file]);
 
   return (
-    <div className="grid gap-4 grid-cols-1 w-full">
-      <div className="ring ring-primary-600 rounded-md overflow-hidden">
-        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
-          <span>
-            {width}px X {height}px
-          </span>
-          <span>{mimeType}</span>
+    <div className="h-full flex items-center">
+      <div className="relative grid grid-cols-2 grid-rows-[min-content,1fr,min-content] w-full max-w-2xl mx-auto gap-y-4">
+        <div className="text-center flex items-center gap-2 justify-center">
+          video
+          {previewStatus !== "idle" && (
+            <button className="underline" onClick={router.reload}>
+              {"<"}start over{">"}
+            </button>
+          )}
         </div>
-        <video
-          preload="metadata"
-          ref={video}
-          className="w-full"
-          muted
-          loop
-          autoPlay
-          playsInline
-        />
-      </div>
-      <div>
-        <div className="text-md font-semibold text-gray-800 leading-none mb-2">
-          {name}
+        <div className="text-center">
+          {conversionStatus.type !== "finished" && "gif"}
         </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            onClick={() => convertVideo(file)}
-            size="sm"
-            disabled={conversionStatus.type === "running"}
-          >
-            {conversionStatus.type === "stopped"
-              ? "Convert to gif"
-              : conversionStatus.type === "running"
-              ? `Converting... ${Math.ceil(conversionStatus.progress * 100)}%`
-              : "Error"}
-          </Button>
+        <div className="col-span-2 bg-black border border-black grid grid-cols-2 grid-rows-1 gap-6 rounded-3xl overflow-hidden">
+          <div className="bg-[#ECECEC] relative rounded-r-3xl aspect-auto h-64 flex items-center justify-center overflow-hidden">
+            {previewStatus === "loading" && <div>loading...</div>}
+            {previewStatus === "unavailable" && <div>preview unavailable</div>}
+            <div
+              className={cn(
+                "grid grid-cols-1 w-full grid-rows-[1fr,fit-content(16rem),1fr] h-full",
+                previewStatus !== "ready" && "hidden"
+              )}
+            >
+              <div className="bg-[#ECECEC]" />
+              <video
+                preload="none"
+                ref={video}
+                className="w-full max-h-[16rem] object-fit bg-[#ECECEC]"
+                muted
+                loop
+                autoPlay
+                playsInline
+              />
+              <div className="bg-[#ECECEC]" />
+            </div>
+            {!file && (
+              <button
+                autoFocus
+                onClick={onImportClick}
+                className="underline"
+                aria-label="import video and convert to gif"
+              >
+                {dragging ? "< drop here >" : "import +"}
+              </button>
+            )}
+          </div>
+          <div className="bg-[#ECECEC] rounded-l-3xl aspect-auto h-64 flex items-center justify-center">
+            <div className="flex flex-col gap-2 items-center">
+              <Cat
+                half={conversionStatus.type === "finished"}
+                className={cn(
+                  conversionStatus.type === "finished" && "absolute -top-2"
+                )}
+              />
+              <img
+                ref={output}
+                crossOrigin="anonymous"
+                className={cn(
+                  "w-full max-h-[16rem] object-fit",
+                  conversionStatus.type === "finished" ? "block" : "hidden"
+                )}
+              />
+              {conversionStatus.type === "running" && (
+                <div>
+                  {conversionStatus.progress === 0
+                    ? "be very patient"
+                    : `${Math.round(conversionStatus.progress * 100)}%`}
+                </div>
+              )}
+              {file && conversionStatus.type === "stopped" && (
+                <button
+                  className="underline"
+                  onClick={() => convertVideo(file)}
+                >
+                  convert
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="ring ring-primary-600 rounded-md overflow-hidden">
-        <div className="font-medium text-primary-800 bg-primary-100 flex justify-between px-3 py-1 text-md">
-          <span>
-            {width}px X {height}px
-          </span>
-          <span>image/gif</span>
+        <div className="col-span-2 text-center">
+          convert video to an animated gif
         </div>
-        <img ref={output} className="w-full" crossOrigin="anonymous" />
       </div>
     </div>
   );
@@ -173,32 +274,32 @@ export const Converter = ({ file }: { file: File }) => {
 export function PageMeta() {
   return (
     <Head>
-      <title>CNVRT.run - Convert video files to animated gifs</title>
+      <title>cnvrt - convert video files to animated gifs</title>
       <meta
         name="title"
-        content="CNVRT.run - Convert video files to animated gifs"
+        content="cnvrt - convert video files to animated gifs"
       />
-      <meta name="description" content="Convert video files to animated gifs" />
+      <meta name="description" content="convert video files to animated gifs" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://cnvrt.run" />
       <meta
         property="og:title"
-        content="CNVRT.run - Convert video files to animated gifs"
+        content="cnvrt - convert video files to animated gifs"
       />
       <meta
         property="og:description"
-        content="Convert video files to animated gifs"
+        content="convert video files to animated gifs"
       />
       <meta property="og:image" content="https://cnvrt.run/social.png" />
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content="https://cnvrt.run" />
       <meta
         property="twitter:title"
-        content="CNVRT.run - Convert video files to animated gifs"
+        content="cnvrt - convert video files to animated gifs"
       />
       <meta
         property="twitter:description"
-        content="Convert video files to animated gifs"
+        content="convert video files to animated gifs"
       />
       <meta property="twitter:image" content="https://cnvrt.run/social.png" />
     </Head>

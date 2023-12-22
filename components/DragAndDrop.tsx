@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { cn } from "../utils";
 
 export type DragAndDropProps = {
   multiple?: boolean;
@@ -31,6 +32,7 @@ export default function DragAndDrop({
     if (e.type === "dragenter" || e.type === "dragover") {
       setDragging(true);
     } else if (e.type === "dragleave") {
+      console.log(e);
       setDragging(false);
     }
   };
@@ -89,7 +91,9 @@ export default function DragAndDrop({
         accept={allowedTypes?.map((x) => `${x}/*`).join(",") ?? "*"}
         onChange={handleFileInputChange}
       />
-      {children({ dragging, files: Object.values(files), openFileViewer })}
+      <div className={cn("h-full", dragging && "pointer-events-none")}>
+        {children({ dragging, files: Object.values(files), openFileViewer })}
+      </div>
     </div>
   );
 }

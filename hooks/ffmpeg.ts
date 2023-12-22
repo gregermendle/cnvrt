@@ -15,8 +15,11 @@ type Status<T> =
       progress: number;
     }
   | {
+      type: "finished";
+      output: T;
+    }
+  | {
       type: "stopped";
-      output: T | null;
     }
   | {
       type: "error";
@@ -27,12 +30,10 @@ export const useFFmpeg = <T>(_runner: Runner<T>) => {
   const $ffmpeg = useRef(new Subject<[Runner<T>, File]>());
   const [status, setStatus] = useState<Status<T>>({
     type: "stopped",
-    output: null,
   });
 
   useEffect(() => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.5/dist/umd";
-    const mtBaseURL = "https://unpkg.com/@ffmpeg/core@0.12.5/dist/umd";
     const ffmpeg = new FFmpeg();
     const progressSub = fromEventPattern<ProgressEvent>(
       (handler) => ffmpeg.on("progress", handler),
@@ -59,9 +60,7 @@ export const useFFmpeg = <T>(_runner: Runner<T>) => {
         mergeMap(async ([runner, file]) => {
           await ffmpeg.load({
             coreURL: await toBlobURL(
-              `${
-                typeof SharedArrayBuffer === "function" ? mtBaseURL : baseURL
-              }/ffmpeg-core.js`,
+              `${baseURL}/ffmpeg-core.js`,
               "text/javascript"
             ),
             wasmURL: await toBlobURL(
@@ -72,7 +71,7 @@ export const useFFmpeg = <T>(_runner: Runner<T>) => {
           return runner(ffmpeg, file);
         }),
         tap((output) => {
-          setStatus({ type: "stopped", output });
+          setStatus({ type: "finished", output });
         }),
         catchError((err, caught) => {
           setStatus({ type: "error", error: err.message });
