@@ -64,61 +64,57 @@ const Header = () => {
   );
 };
 
-const eyesOpenASCII = [
-  " /\\__/\\",
-  "( •⩊• )",
-  " >    <",
-  "( U  U )",
-  " @    @",
+const regularBlink = [
+  [
+    [-60, 0],
+    [0, 0],
+  ],
 ];
 
-const eyesClosedASCII = [
-  " /\\__/\\",
-  "( >⩊< )",
-  " >    <",
-  "( U  U )",
-  " @    @",
-];
+const blushOffsetY = 0;
+const blushOffsetX = -120;
 
-const pawsOnlyASCII = "  U  U  ";
-const blushASCII = "˶";
-
-const replacePaws = (x: string[]) => {
-  return [...x.slice(0, 3), pawsOnlyASCII];
-};
-
-const addBlush = (x: string[]) => {
-  const face = x[1].replace(
-    /\(\s(•⩊•|>⩊<)\s\)/g,
-    `(${blushASCII}$1${blushASCII})`
-  );
-  return [...x.slice(0, 1), face, ...x.slice(2, 5)];
-};
+const pawsOnlyOffsetY = -80;
+const pawsOnlyOffsetX = 0;
 
 export const Cat = ({
   blush,
   pawsOnly,
   className,
   ...rest
-}: React.HTMLAttributes<HTMLPreElement> & {
+}: React.HTMLAttributes<HTMLDivElement> & {
   pawsOnly: boolean;
   blush: boolean;
 }) => {
-  const [frame, setFrame] = useState(eyesOpenASCII);
+  const [position, setPosition] = useState([0, 0]);
 
   // Could probably do this with css but i dont feel like it
   useEffect(() => {
-    const blink = from([[eyesClosedASCII, eyesOpenASCII]])
+    const blink = from(regularBlink)
       .pipe(
         mergeMap((x) =>
           from(x).pipe(
-            map((x) => (pawsOnly ? replacePaws(x) : x)),
-            map((x) => (blush ? addBlush(x) : x)),
+            map(([x, y]) => {
+              let offsetY = 0;
+              let offsetX = 0;
+
+              if (blush) {
+                offsetY += blushOffsetY;
+                offsetX += blushOffsetX;
+              }
+
+              if (pawsOnly) {
+                offsetY += pawsOnlyOffsetY;
+                offsetX += pawsOnlyOffsetX;
+              }
+
+              return [x + offsetX, y + offsetY];
+            }),
             repeat(Math.round(1 + Math.random() * 1))
           )
         ),
         delayWhen((_, idx) => interval(idx * 150)),
-        tap(setFrame),
+        tap(setPosition),
         delayWhen(() => interval(4000 + Math.round(Math.random() * 4000))),
         repeat()
       )
@@ -128,13 +124,18 @@ export const Cat = ({
   }, [pawsOnly, blush]);
 
   return (
-    <pre
-      {...rest}
-      className={cn(className, "leading-tight")}
+    <div
+      style={{
+        background: `url(meester-sprites.svg) ${position
+          .map((x) => x + "px")
+          .join(" ")}`,
+        height: 70,
+        width: 50,
+      }}
       aria-label="kitty ascii art"
-    >
-      {frame.join("\n")}
-    </pre>
+      className={cn(className, "leading-tight")}
+      {...rest}
+    />
   );
 };
 
@@ -160,6 +161,12 @@ export const Converter = ({
   useEffect(() => {
     if (isFinished && typeof conversionStatus.output === "string") {
       output.current!.src = conversionStatus.output;
+      const link = document.createElement("a");
+      link.download = `${
+        file?.name.replace(/\.[^/.]+$/, "") ?? "download"
+      }.gif`;
+      link.href = conversionStatus.output;
+      link.click();
     }
   }, [isFinished]);
 
@@ -224,7 +231,7 @@ export const Converter = ({
               <video
                 preload="none"
                 ref={video}
-                className="w-full max-h-[16rem] object-fit bg-[#ECECEC]"
+                className="w-full max-h-[16rem] object-contain bg-[#ECECEC]"
                 muted
                 loop
                 autoPlay
@@ -268,7 +275,7 @@ export const Converter = ({
                 ref={output}
                 crossOrigin="anonymous"
                 className={cn(
-                  "w-full max-h-[16rem] object-fit",
+                  "w-full max-h-[16rem] object-contain",
                   conversionStatus.type === "finished" ? "block" : "hidden"
                 )}
               />
