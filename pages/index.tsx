@@ -82,16 +82,29 @@ const eyesClosedASCII = [
 ];
 
 const pawsOnlyASCII = "  U  U  ";
+const blushASCII = "˶";
 
-const pawsOnly = (x: Array<string>) => {
+const replacePaws = (x: string[]) => {
   return [...x.slice(0, 3), pawsOnlyASCII];
 };
 
+const addBlush = (x: string[]) => {
+  const face = x[1].replace(
+    /\(\s(•⩊•|>⩊<)\s\)/g,
+    `(${blushASCII}$1${blushASCII})`
+  );
+  return [...x.slice(0, 1), face, ...x.slice(2, 5)];
+};
+
 export const Cat = ({
-  half,
+  blush,
+  pawsOnly,
   className,
   ...rest
-}: React.HTMLAttributes<HTMLPreElement> & { half: boolean }) => {
+}: React.HTMLAttributes<HTMLPreElement> & {
+  pawsOnly: boolean;
+  blush: boolean;
+}) => {
   const [frame, setFrame] = useState(eyesOpenASCII);
 
   // Could probably do this with css but i dont feel like it
@@ -100,7 +113,8 @@ export const Cat = ({
       .pipe(
         mergeMap((x) =>
           from(x).pipe(
-            map((x) => (half ? pawsOnly(x) : x)),
+            map((x) => (pawsOnly ? replacePaws(x) : x)),
+            map((x) => (blush ? addBlush(x) : x)),
             repeat(Math.round(1 + Math.random() * 1))
           )
         ),
@@ -112,7 +126,7 @@ export const Cat = ({
       .subscribe();
 
     return () => blink.unsubscribe();
-  }, [half]);
+  }, [pawsOnly, blush]);
 
   return (
     <pre
@@ -138,6 +152,7 @@ export const Converter = ({
   const video = useRef<HTMLVideoElement>(null);
   const output = useRef<HTMLImageElement>(null);
   const router = useRouter();
+  const [fps, setFps] = useState("10");
   const [previewStatus, setPreviewStatus] = useState<
     "idle" | "loading" | "ready" | "unavailable"
   >("idle");
@@ -231,8 +246,20 @@ export const Converter = ({
           </div>
           <div className="bg-[#ECECEC] rounded-l-3xl aspect-auto h-64 flex items-center justify-center">
             <div className="flex flex-col gap-2 items-center">
+              {file && conversionStatus.type === "stopped" && (
+                <select
+                  onChange={(e) => setFps(e.target.value)}
+                  value={fps}
+                  className="underline bg-transparent"
+                >
+                  <option value="10">~10 fps</option>
+                  <option value="30">~30 fps</option>
+                  <option value="60">~60 fps</option>
+                </select>
+              )}
               <Cat
-                half={conversionStatus.type === "finished"}
+                blush={conversionStatus.type === "error"}
+                pawsOnly={conversionStatus.type === "finished"}
                 className={cn(
                   conversionStatus.type === "finished" &&
                     "absolute sm:-top-2 sm:rotate-0 bottom-8 rotate-180"
@@ -246,6 +273,9 @@ export const Converter = ({
                   conversionStatus.type === "finished" ? "block" : "hidden"
                 )}
               />
+              {conversionStatus.type === "error" && (
+                <div>{conversionStatus.error}</div>
+              )}
               {conversionStatus.type === "running" && (
                 <div>
                   {conversionStatus.progress === 0
@@ -256,7 +286,7 @@ export const Converter = ({
               {file && conversionStatus.type === "stopped" && (
                 <button
                   className="underline"
-                  onClick={() => convertVideo(file)}
+                  onClick={() => convertVideo(file, { fps })}
                 >
                   convert
                 </button>
