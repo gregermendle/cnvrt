@@ -26,7 +26,6 @@ export const VideoToGif: NextPage = () => {
   return (
     <div className="h-screen min-h-screen grid grid-rows-[auto,1fr,auto] grid-cols-1">
       <Header />
-      <PageMeta />
       <DragAndDrop allowedTypes={["video"]}>
         {({ dragging, files, openFileViewer }) => (
           <Converter
@@ -306,40 +305,5 @@ export const Converter = ({
     </div>
   );
 };
-
-export function PageMeta() {
-  return (
-    <Head>
-      <title>cnvrt - convert video files to animated gifs</title>
-      <meta
-        name="title"
-        content="cnvrt - convert video files to animated gifs"
-      />
-      <meta name="description" content="convert video files to animated gifs" />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://cnvrt.run" />
-      <meta
-        property="og:title"
-        content="cnvrt - convert video files to animated gifs"
-      />
-      <meta
-        property="og:description"
-        content="convert video files to animated gifs"
-      />
-      <meta property="og:image" content="https://cnvrt.run/social.png" />
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content="https://cnvrt.run" />
-      <meta
-        property="twitter:title"
-        content="cnvrt - convert video files to animated gifs"
-      />
-      <meta
-        property="twitter:description"
-        content="convert video files to animated gifs"
-      />
-      <meta property="twitter:image" content="https://cnvrt.run/social.png" />
-    </Head>
-  );
-}
 
 export default VideoToGif;
