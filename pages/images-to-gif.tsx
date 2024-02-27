@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import DragAndDrop from "../components/DragAndDrop";
-import { videoToGif } from "../lib/video";
+import { imagesToGif } from "../lib/video";
 import { useFFmpeg } from "../hooks/ffmpeg";
 import { NextPage } from "next/types";
 import { cn } from "../utils";
-import { fromEvent, of, switchMap, takeUntil, tap, timer } from "rxjs";
 import { useRouter } from "next/router";
 import { Cat } from "../components/Cat";
 import Head from "next/head";
@@ -13,37 +12,44 @@ export const VideoToGif: NextPage = () => {
   return (
     <>
       <Head>
-        <title>cnvrt.run - video to gif</title>
+        <title>cnvrt.run - images to gif</title>
         <meta
           name="title"
-          content="cnvrt - convert video files to animated gifs"
+          content="cnvrt - compile images to an animated gif"
         />
-        <meta
-          name="description"
-          content="convert video files to animated gifs"
-        />
+        <meta name="description" content="compile images to an animated gif" />
         <meta
           property="og:title"
-          content="cnvrt - convert video files to animated gifs"
+          content="cnvrt - compile images to an animated gif"
         />
         <meta
           property="og:description"
-          content="convert video files to animated gifs"
+          content="compile images to an animated gif"
         />
         <meta
           property="twitter:title"
-          content="cnvrt - convert video files to animated gifs"
+          content="cnvrt - compile images to an animated gif"
         />
         <meta
           property="twitter:description"
-          content="convert video files to animated gifs"
+          content="compile images to an animated gif"
         />
       </Head>
-      <DragAndDrop allowedTypes={["video"]}>
+      <DragAndDrop allowedTypes={["image"]} multiple>
         {({ dragging, files, openFileViewer }) => (
           <Converter
             onImportClick={openFileViewer}
-            file={files[0]}
+            files={files.sort((a, b) => {
+              if (a.name < b.name) {
+                return -1;
+              }
+
+              if (a.name > b.name) {
+                return 1;
+              }
+
+              return 0;
+            })}
             dragging={dragging}
           />
         )}
@@ -57,75 +63,36 @@ export const VideoToGif: NextPage = () => {
 };
 
 export const Converter = ({
-  file,
+  files,
   onImportClick,
   dragging,
 }: {
-  file?: File;
+  files?: File[];
   dragging: boolean;
   onImportClick: () => void;
 }) => {
-  const [convertVideo, conversionStatus] = useFFmpeg(videoToGif);
-  const video = useRef<HTMLVideoElement>(null);
+  const [convertVideo, conversionStatus] = useFFmpeg(imagesToGif);
   const output = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [fps, setFps] = useState("10");
-  const [previewStatus, setPreviewStatus] = useState<
-    "idle" | "loading" | "ready" | "unavailable"
-  >("idle");
 
   const isFinished = conversionStatus.type === "finished";
   useEffect(() => {
     if (isFinished && typeof conversionStatus.output === "string") {
       output.current!.src = conversionStatus.output;
       const link = document.createElement("a");
-      link.download = `${
-        file?.name.replace(/\.[^/.]+$/, "") ?? "download"
-      }.gif`;
+      link.download = "download.gif";
       link.href = conversionStatus.output;
       link.click();
     }
   }, [isFinished]);
 
-  useEffect(() => {
-    if (!file) return;
-
-    const sub = of(file)
-      .pipe(
-        tap(() => {
-          setPreviewStatus("loading");
-
-          const dataUrl = URL.createObjectURL(file);
-          if (typeof dataUrl === "string") {
-            const source = document.createElement("source");
-            source.src = dataUrl;
-            source.type = file.type;
-            video.current!.replaceChildren(source);
-            video.current!.currentTime = 1;
-          }
-        }),
-        switchMap(() => {
-          const canPlay = fromEvent(video.current!, "canplay").pipe(
-            tap(() => setPreviewStatus("ready"))
-          );
-
-          return timer(6 * 1000).pipe(
-            takeUntil(canPlay),
-            tap(() => setPreviewStatus("unavailable"))
-          );
-        })
-      )
-      .subscribe();
-
-    return () => sub.unsubscribe();
-  }, [file]);
-
   return (
     <div className="h-full flex items-center">
       <div className="relative grid sm:grid-cols-2 grid-cols-1 grid-rows-[min-content,1fr,min-content] w-full max-w-2xl mx-auto gap-y-4">
         <div className="text-center flex items-center gap-2 justify-center">
-          video
-          {previewStatus !== "idle" && (
+          images
+          {files && files.length > 0 && (
             <button className="underline" onClick={router.reload}>
               {"<"}start over{">"}
             </button>
@@ -135,51 +102,54 @@ export const Converter = ({
           {conversionStatus.type !== "finished" && "gif"}
         </div>
         <div className="col-span-2 bg-black border border-black grid sm:grid-cols-2 sm:grid-rows-1 grid-rows-2 grid-cols-1 gap-6 rounded-3xl overflow-hidden">
-          <div className="bg-[#ECECEC] relative rounded-r-3xl aspect-auto h-64 flex items-center justify-center overflow-hidden">
-            {previewStatus === "loading" && <div>loading...</div>}
-            {previewStatus === "unavailable" && <div>preview unavailable</div>}
-            <div
-              className={cn(
-                "grid grid-cols-1 w-full grid-rows-[1fr,fit-content(16rem),1fr] h-full",
-                previewStatus !== "ready" && "hidden"
-              )}
-            >
-              <div className="bg-[#ECECEC]" />
-              <video
-                preload="none"
-                ref={video}
-                className="w-full max-h-[16rem] object-contain bg-[#ECECEC]"
-                muted
-                loop
-                autoPlay
-                playsInline
-              />
-              <div className="bg-[#ECECEC]" />
-            </div>
-            {!file && (
-              <button
-                autoFocus
-                onClick={onImportClick}
-                className="underline"
-                aria-label="import video and convert to gif"
-              >
-                {dragging ? "< drop here >" : "import +"}
-              </button>
+          <div className="bg-[#ECECEC] relative rounded-r-3xl aspect-auto h-64 overflow-hidden">
+            {files && files.length > 0 && (
+              <div className="w-full h-full overflow-auto py-4">
+                {files?.map((x) => {
+                  const img = URL.createObjectURL(x);
+                  return (
+                    <div
+                      key={x.name}
+                      className="flex items-center gap-2 px-4 py-1"
+                    >
+                      <img
+                        src={img}
+                        className="w-8 h-8 aspect-square object-contain"
+                      />
+                      {x.name}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {files?.length === 0 && (
+              <div className="h-full w-full flex items-center justify-center">
+                <button
+                  autoFocus
+                  onClick={onImportClick}
+                  className="underline"
+                  aria-label="import video and convert to gif"
+                >
+                  {dragging ? "< drop here >" : "import +"}
+                </button>
+              </div>
             )}
           </div>
           <div className="bg-[#ECECEC] rounded-l-3xl aspect-auto h-64 flex items-center justify-center">
             <div className="flex flex-col gap-2 items-center">
-              {file && conversionStatus.type === "stopped" && (
-                <select
-                  onChange={(e) => setFps(e.target.value)}
-                  value={fps}
-                  className="underline bg-transparent"
-                >
-                  <option value="10">~10 fps</option>
-                  <option value="30">~30 fps</option>
-                  <option value="60">~60 fps</option>
-                </select>
-              )}
+              {files &&
+                files.length > 0 &&
+                conversionStatus.type === "stopped" && (
+                  <select
+                    onChange={(e) => setFps(e.target.value)}
+                    value={fps}
+                    className="underline bg-transparent"
+                  >
+                    <option value="10">~10 fps</option>
+                    <option value="30">~30 fps</option>
+                    <option value="60">~60 fps</option>
+                  </select>
+                )}
               <Cat
                 blush={conversionStatus.type === "error"}
                 pawsOnly={conversionStatus.type === "finished"}
@@ -206,14 +176,16 @@ export const Converter = ({
                     : `${Math.round(conversionStatus.progress * 100)}%`}
                 </div>
               )}
-              {file && conversionStatus.type === "stopped" && (
-                <button
-                  className="underline"
-                  onClick={() => convertVideo([file], { fps })}
-                >
-                  convert
-                </button>
-              )}
+              {files &&
+                files.length > 0 &&
+                conversionStatus.type === "stopped" && (
+                  <button
+                    className="underline"
+                    onClick={() => convertVideo(files, { fps })}
+                  >
+                    convert
+                  </button>
+                )}
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ import {
   tap,
 } from "rxjs";
 
-type Runner<T, O> = (ffmpeg: FFmpeg, file: File, options: O) => Promise<T>;
+type Runner<T, O> = (ffmpeg: FFmpeg, file: File[], options: O) => Promise<T>;
 
 type Status<T> =
   | {
@@ -35,7 +35,7 @@ type Status<T> =
     };
 
 export const useFFmpeg = <T, O>(_runner: Runner<T, O>) => {
-  const $ffmpeg = useRef(new Subject<[typeof _runner, File, O]>());
+  const $ffmpeg = useRef(new Subject<[typeof _runner, File[], O]>());
   const [status, setStatus] = useState<Status<T>>({
     type: "stopped",
   });
@@ -112,7 +112,7 @@ export const useFFmpeg = <T, O>(_runner: Runner<T, O>) => {
   }, []);
 
   const run = useCallback(
-    async (file: File, options: O) => {
+    async (file: File[], options: O) => {
       $ffmpeg.current.next([_runner, file, options]);
     },
     [_runner]
