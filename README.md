@@ -1,6 +1,6 @@
 # cnvrt
 
-convert video to gif with kitty.
+convert video to gif and compile images to gif with kitty.
 
 ## getting Started
 

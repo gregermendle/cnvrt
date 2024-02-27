@@ -66,9 +66,10 @@ export default function DragAndDrop({
         e.stopPropagation();
         setDragging(true);
       } else if (
-        e.type === "dragleave" &&
-        e.target instanceof HTMLElement &&
-        e.target.classList.contains("drop-zone")
+        e.type === "dragend" ||
+        (e.type === "dragleave" &&
+          e.target instanceof HTMLElement &&
+          e.target.classList.contains("drop-zone"))
       ) {
         setDragging(false);
       }
@@ -90,12 +91,14 @@ export default function DragAndDrop({
     document.addEventListener("dragenter", handleDrag);
     document.addEventListener("dragleave", handleDrag);
     document.addEventListener("dragover", handleDrag);
+    document.addEventListener("dragend", handleDrag);
     document.addEventListener("drop", handleDrop);
 
     return () => {
       document.removeEventListener("dragenter", handleDrag);
       document.removeEventListener("dragleave", handleDrag);
       document.removeEventListener("dragover", handleDrag);
+      document.removeEventListener("dragend", handleDrag);
       document.removeEventListener("drop", handleDrop);
     };
   }, []);

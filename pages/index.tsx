@@ -8,6 +8,7 @@ import { fromEvent, of, switchMap, takeUntil, tap, timer } from "rxjs";
 import { useRouter } from "next/router";
 import { Cat } from "../components/Cat";
 import Head from "next/head";
+import Link from "next/link";
 
 export const VideoToGif: NextPage = () => {
   return (
@@ -51,6 +52,17 @@ export const VideoToGif: NextPage = () => {
       <div className="text-center px-2 py-2">
         videos are converted in your browser. no data is stored or collected by
         cnvrt. cnvrt may not be compatible with some devices.
+      </div>
+      <div className="text-center px-2 py-2 bg-black text-white">
+        made by greg{" "}
+        <Link
+          target="_blank"
+          rel="noreferrer"
+          href="https://www.x.com/_studable_"
+          className="underline underline-offset-4"
+        >
+          (@_studable_)
+        </Link>
       </div>
     </>
   );

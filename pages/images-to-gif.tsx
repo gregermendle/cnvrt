@@ -7,6 +7,7 @@ import { cn } from "../utils";
 import { useRouter } from "next/router";
 import { Cat } from "../components/Cat";
 import Head from "next/head";
+import Link from "next/link";
 
 export const VideoToGif: NextPage = () => {
   return (
@@ -55,8 +56,19 @@ export const VideoToGif: NextPage = () => {
         )}
       </DragAndDrop>
       <div className="text-center px-2 py-2">
-        videos are converted in your browser. no data is stored or collected by
-        cnvrt. cnvrt may not be compatible with some devices.
+        images are compiled into a gif in your browser. no data is stored or
+        collected by cnvrt. cnvrt may not be compatible with some devices.
+      </div>
+      <div className="text-center px-2 py-2 bg-black text-white">
+        made by greg{" "}
+        <Link
+          target="_blank"
+          rel="noreferrer"
+          href="https://www.x.com/_studable_"
+          className="underline underline-offset-4"
+        >
+          (@_studable_)
+        </Link>
       </div>
     </>
   );
@@ -195,7 +207,7 @@ export const Converter = ({
             conversionStatus.type === "finished" && "sm:pt-0 pt-10"
           )}
         >
-          convert video to an animated gif
+          compile images into a animated gif
         </div>
       </div>
     </div>

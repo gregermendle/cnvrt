@@ -3,10 +3,14 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "../utils";
 
 const Header = () => {
+  const pathname = usePathname();
+
   return (
-    <header className="grid grid-cols-3 px-2 py-2">
+    <header className="grid grid-cols-[100px,1fr,100px] px-2 py-2">
       <svg
         aria-label="cnvrt logo"
         width="33"
@@ -23,14 +27,28 @@ const Header = () => {
       <nav className="justify-self-center">
         <ul className="flex gap-4">
           <li>
-            <Link href="/">video-to-gif</Link>
+            <Link
+              href="/"
+              className={cn(pathname === "/" && "underline underline-offset-4")}
+            >
+              video-to-gif
+            </Link>
           </li>
           <li>
-            <Link href="/images-to-gif">images-to-gif</Link>
+            <Link
+              href="/images-to-gif"
+              className={cn(
+                pathname === "/images-to-gif" && "underline underline-offset-4"
+              )}
+            >
+              images-to-gif
+            </Link>
           </li>
         </ul>
       </nav>
       <Link
+        target="_blank"
+        rel="noreferrer"
         className="justify-self-end"
         href="https://github.com/gregermendle/cnvrt"
       >
