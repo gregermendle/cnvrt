@@ -54,7 +54,7 @@ export default function App({ Component, pageProps }: AppProps) {
           content="convert video files to animated gifs"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://cnvrt.run" />
+        <meta property="og:url" content="https://www.cnvrt.run" />
         <meta
           property="og:title"
           content="cnvrt - convert video files to animated gifs"
@@ -63,9 +63,9 @@ export default function App({ Component, pageProps }: AppProps) {
           property="og:description"
           content="convert video files to animated gifs"
         />
-        <meta property="og:image" content="https://cnvrt.run/social.png" />
+        <meta property="og:image" content="https://www.cnvrt.run/social.png" />
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://cnvrt.run" />
+        <meta property="twitter:url" content="https://www.cnvrt.run" />
         <meta
           property="twitter:title"
           content="cnvrt - convert video files to animated gifs"
@@ -74,11 +74,14 @@ export default function App({ Component, pageProps }: AppProps) {
           property="twitter:description"
           content="convert video files to animated gifs"
         />
-        <meta property="twitter:image" content="https://cnvrt.run/social.png" />
+        <meta
+          property="twitter:image"
+          content="https://www.cnvrt.run/social.png"
+        />
         <link
           rel="icon"
           type="image/png"
-          href="https://cnvrt.run/favicon.png"
+          href="https://www.cnvrt.run/favicon.png"
         />
       </Head>
       <main className="h-screen min-h-screen grid grid-rows-[auto,1fr,auto] grid-cols-1">
